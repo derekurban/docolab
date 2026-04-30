@@ -1,12 +1,10 @@
 import { spawn } from "node:child_process";
-import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import open from "open";
 import { loadConfig, writeDefaultConfig } from "./config.js";
 import { startServer } from "./server.js";
 
-const require = createRequire(import.meta.url);
 const packageRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const cliPath = path.join(packageRoot, "bin", "docolab.js");
 
@@ -44,8 +42,12 @@ function withoutFlags(args) {
 }
 
 function resolvePortlessCli() {
-  const packageJson = require.resolve("portless/package.json");
-  return path.join(path.dirname(packageJson), "dist", "cli.js");
+  return path.join(
+    packageRoot,
+    "node_modules",
+    ".bin",
+    process.platform === "win32" ? "portless.cmd" : "portless"
+  );
 }
 
 async function runDev(args) {
@@ -59,9 +61,8 @@ async function runDev(args) {
     const url = `https://${name}.localhost`;
     const portlessCli = resolvePortlessCli();
     const childArgs = [
-      portlessCli,
       name,
-      process.execPath,
+      "node",
       cliPath,
       "serve",
       "--cwd",
@@ -72,10 +73,11 @@ async function runDev(args) {
     childArgs.push(...config.portless.args);
 
     console.log(`Starting docolab at ${url}`);
-    const child = spawn(process.execPath, childArgs, {
+    const child = spawn(portlessCli, childArgs, {
       cwd,
       stdio: "inherit",
-      env: process.env
+      env: process.env,
+      shell: process.platform === "win32"
     });
 
     if (config.open) {
