@@ -1,0 +1,12 @@
+docs:
+  root: docs
+  include:
+    - "**/*.md"
+    - "**/*.mdx"
+
+portless:
+  enabled: true
+  prefix: docs
+  args: []
+
+open: true

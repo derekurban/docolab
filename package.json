@@ -1,0 +1,53 @@
+{
+  "name": "docolab",
+  "version": "0.1.0",
+  "description": "A local wiki-style harness for Markdown docs, diagrams, backlinks, and AI-assisted design loops.",
+  "type": "module",
+  "bin": {
+    "docolab": "./bin/docolab.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "check": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derekurban/docolab.git"
+  },
+  "keywords": [
+    "docs",
+    "markdown",
+    "mermaid",
+    "wiki",
+    "diagrams",
+    "backlinks",
+    "documentation"
+  ],
+  "author": "Derek Urban",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "gray-matter": "^4.0.3",
+    "marked": "^15.0.7",
+    "mermaid": "^11.14.0",
+    "open": "^10.1.0",
+    "portless": "^0.12.0",
+    "yaml": "^2.7.0"
+  },
+  "overrides": {
+    "uuid": "^14.0.0"
+  }
+}
