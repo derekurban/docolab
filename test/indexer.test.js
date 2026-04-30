@@ -20,3 +20,21 @@ test("buildIndex resolves markdown links and backlinks", async () => {
   assert.equal(a.linksOut[0].to, "b");
   assert.equal(b.backlinks[0].from, "a");
 });
+
+test("buildIndex deduplicates backlinks from the same source document", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "docolab-"));
+  const docs = path.join(dir, "docs");
+  fs.mkdirSync(docs);
+  fs.writeFileSync(
+    path.join(docs, "a.md"),
+    "---\nid: a\nrelated:\n  - b\n---\n# A\nSee [B](./b.md) and [[b]].",
+    "utf8"
+  );
+  fs.writeFileSync(path.join(docs, "b.md"), "---\nid: b\n---\n# B\n", "utf8");
+
+  const index = await buildIndex({ cwd: dir, config: defaultConfig });
+  const b = index.docs.find((doc) => doc.id === "b");
+
+  assert.equal(b.backlinks.length, 1);
+  assert.equal(b.backlinks[0].from, "a");
+});

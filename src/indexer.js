@@ -166,9 +166,12 @@ export async function buildIndex({ cwd, config }) {
   }
 
   const backlinks = new Map(docs.map((doc) => [doc.id, []]));
+  const backlinkKeys = new Set();
   for (const doc of docs) {
     for (const link of doc.linksOut) {
-      if (link.to && backlinks.has(link.to)) {
+      const key = `${doc.id}->${link.to}`;
+      if (link.to && backlinks.has(link.to) && !backlinkKeys.has(key)) {
+        backlinkKeys.add(key);
         backlinks.get(link.to).push({
           from: doc.id,
           fromTitle: doc.title,

@@ -76,6 +76,16 @@ export async function startServer({ cwd, docsRoot, port = 0 }) {
         return;
       }
 
+      if (url.pathname === "/favicon.ico") {
+        sendText(
+          res,
+          200,
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="5" fill="#2e5745"/><text x="16" y="22" text-anchor="middle" font-size="18" font-family="Arial" font-weight="700" fill="#fffdf8">D</text></svg>',
+          "image/svg+xml"
+        );
+        return;
+      }
+
       if (url.pathname.startsWith("/vendor/mermaid/")) {
         await serveFile(
           res,
