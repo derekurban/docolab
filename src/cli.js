@@ -63,6 +63,22 @@ function resolvePortlessCli() {
   throw new Error("Could not find the portless executable. Reinstall docolab and try again.");
 }
 
+export function buildPortlessArgs({ name, cwd, docsRoot, extraArgs }) {
+  const args = [
+    name,
+    "--force",
+    "node",
+    cliPath,
+    "serve",
+    "--cwd",
+    cwd
+  ];
+
+  if (docsRoot) args.push("--docs", docsRoot);
+  args.push(...extraArgs);
+  return args;
+}
+
 async function runDev(args) {
   const cwd = path.resolve(getFlagValue(args, "--cwd") ?? process.cwd());
   const positional = withoutFlags(args);
@@ -73,17 +89,12 @@ async function runDev(args) {
     const name = config.portless.prefix;
     const url = `https://${name}.localhost`;
     const portlessCli = resolvePortlessCli();
-    const childArgs = [
+    const childArgs = buildPortlessArgs({
       name,
-      "node",
-      cliPath,
-      "serve",
-      "--cwd",
-      cwd
-    ];
-
-    if (docsRoot) childArgs.push("--docs", docsRoot);
-    childArgs.push(...config.portless.args);
+      cwd,
+      docsRoot,
+      extraArgs: config.portless.args
+    });
 
     console.log(`Starting docolab at ${url}`);
     const child = spawn(portlessCli, childArgs, {
