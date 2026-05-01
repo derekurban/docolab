@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import open from "open";
@@ -42,12 +43,24 @@ function withoutFlags(args) {
 }
 
 function resolvePortlessCli() {
-  return path.join(
-    packageRoot,
-    "node_modules",
-    ".bin",
-    process.platform === "win32" ? "portless.cmd" : "portless"
-  );
+  const binName = process.platform === "win32" ? "portless.cmd" : "portless";
+  let dir = packageRoot;
+
+  for (let i = 0; i < 8; i += 1) {
+    const candidates = [
+      path.join(dir, "node_modules", ".bin", binName),
+      path.join(dir, ".bin", binName)
+    ];
+
+    const found = candidates.find((candidate) => fs.existsSync(candidate));
+    if (found) return found;
+
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
+  throw new Error("Could not find the portless executable. Reinstall docolab and try again.");
 }
 
 async function runDev(args) {
