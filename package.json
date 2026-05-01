@@ -1,6 +1,6 @@
 {
   "name": "docolab",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A local wiki-style harness for Markdown docs, diagrams, backlinks, and AI-assisted design loops.",
   "type": "module",
   "bin": {
